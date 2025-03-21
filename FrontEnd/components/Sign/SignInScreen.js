@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 const SignInScreen = ({ navigation }) => {
   return (
-    <ImageBackground source={require('../Pictures/blackground-iphone1413.png')} style={styles.background}>
+    <ImageBackground source={require('../../assets/Pictures/blackground-iphone1413.png')} style={styles.background}>
       <View style={styles.container}>
         {/* ไอคอนเปลี่ยนภาษา */}
         <TouchableOpacity style={styles.languageIcon} onPress={() => navigation.navigate('Language')}>
@@ -23,9 +23,12 @@ const SignInScreen = ({ navigation }) => {
           <Text style={styles.linkForgot}>Forgot Password?</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button} onPress={() => alert('Sign In')}>
+        <TouchableOpacity 
+          style={styles.button} 
+          onPress={() => navigation.navigate('MainApp', { screen: 'Main Page' })}
+          >
           <Text style={styles.buttonText}>START</Text>
-        </TouchableOpacity>
+        </TouchableOpacity>        
 
         <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
           <Text style={styles.LinkSignUp}>

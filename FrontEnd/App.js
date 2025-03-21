@@ -15,6 +15,7 @@ import LanguageScreen from './components/Sign/LanguageScreen';
 import HomeScreen from './components/MainApp/HomeScreen';
 import TabBar from './components/MainApp/TabBar';
 import RouteSearchScreen from './components/MainApp/RouteSearchScreen';
+import Welcome from './components/MainApp/Welcome';
 
 // Create Navigators
 const Stack = createStackNavigator();
@@ -47,7 +48,12 @@ function HomeStack() {
 function AuthStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Welcome" component={WelcomeScreen} />
+      {/* เปิดแอปมาให้ไปหน้า Welcome (Splash) ก่อน */}
+      <Stack.Screen name="Welcome" component={Welcome} />
+      
+      {/* หลังจาก 3 วิ เปลี่ยนไปหน้า WelcomeScreen */}
+      <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
+      
       <Stack.Screen name="SignIn" component={SignInScreen} />
       <Stack.Screen name="SignUp" component={SignUpScreen} />
       <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
@@ -57,6 +63,7 @@ function AuthStack() {
     </Stack.Navigator>
   );
 }
+
 
 // 🌎 **Root Navigation**
 export default function App() {

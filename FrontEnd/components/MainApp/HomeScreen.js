@@ -134,8 +134,8 @@ const HomeScreen = () => {
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
       {/* รูปหัวหน้า */}
-      <Image source={require('../Pictures/train.jpg')} style={styles.headerImage} />
-      <Image source={require('../Pictures/logo_skytrain.png')} style={styles.logo} />
+      <Image source={require('../../assets/Pictures/train.jpg')} style={styles.headerImage} />
+      <Image source={require('../../assets/Pictures/logo_skytrain.png')} style={styles.logo} />
 
       {/* กล่องค้นหา */}
       <View style={styles.searchContainer}>
