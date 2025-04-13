@@ -20,10 +20,11 @@ import RouteSearchScreen from './components/MainApp/RouteSearchScreen';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-// 🏠 **Main App (Tab Navigation)**
+// 🏠 **Main App (Tab Navigation)** - สร้าง Tab Navigator สำหรับแอปหลัก
 function MainApp() {
   return (
     <Tab.Navigator tabBar={(props) => <TabBar {...props} />}>
+      {/* Update Tab names to match navigation */}
       <Tab.Screen name="Your Ticket" component={HomeScreen} options={{ headerShown: false }} />
       <Tab.Screen name="Station" component={HomeScreen} options={{ headerShown: false }} />
       <Tab.Screen name="Main Page" component={HomeStack} options={{ headerShown: false }} />
@@ -33,7 +34,7 @@ function MainApp() {
   );
 }
 
-// 🏠 **Home Stack**
+// 🏠 **Home Stack** - สร้าง Stack Navigator สำหรับหน้าหลัก
 function HomeStack() {
   return (
     <Stack.Navigator>
@@ -43,7 +44,7 @@ function HomeStack() {
   );
 }
 
-// 🌍 **Authentication Stack**
+// 🌍 **Authentication Stack** - สร้าง Stack Navigator สำหรับหน้าล็อกอิน/สมัครสมาชิก
 function AuthStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -63,10 +64,8 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {/* ถ้ายังไม่ได้ล็อกอิน ให้ไปที่ AuthStack */}
+        {/* Update navigation to point to Main Page */}
         <Stack.Screen name="Auth" component={AuthStack} />
-        
-        {/* ถ้าล็อกอินแล้ว ไปที่ MainApp */}
         <Stack.Screen name="MainApp" component={MainApp} />
       </Stack.Navigator>
     </NavigationContainer>

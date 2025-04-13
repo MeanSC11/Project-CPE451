@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 const WelcomeScreen = ({ navigation }) => {
   return (
-    <ImageBackground source={require('../Pictures/blackground-iphone1413.png')} style={styles.background}>
+    <ImageBackground source={require('../../assets/Pictures/blackground-iphone1413.png')} style={styles.background}>
       <View style={styles.container}>
         {/* ไอคอนเปลี่ยนภาษา */}
         <TouchableOpacity style={styles.languageIcon} onPress={() => navigation.navigate('Language')}>
@@ -22,6 +22,10 @@ const WelcomeScreen = ({ navigation }) => {
         {/* ปุ่ม SIGN UP */}
         <TouchableOpacity style={styles.signUpButton} onPress={() => navigation.navigate('SignUp')}>
           <Text style={styles.signUpText}>SIGN UP</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.startButton} onPress={() => navigation.navigate('MainApp', { screen: 'Main Page' })}>
+          <Text style={styles.startText}>START</Text>
         </TouchableOpacity>
 
         {/* ข้อความ login with Social Media */}
@@ -87,14 +91,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 20,
   },
+  startButton: {
+    backgroundColor: '#fdd835', 
+    padding: 15, 
+    margin: 10, 
+    borderRadius: 30,
+    width: '80%',
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  startText: {
+    fontSize: 20, 
+    fontWeight: 'bold',
+    color: '#000',
+  },
   signUpText: {
     color: '#FFF',
     fontSize: 20,
     fontWeight: 'bold',
   },
   socialLoginText: {
-    marginTop: 100,
-    fontSize: 20,
+    marginTop: 35,
+    fontSize: 16,
     color: '#000',
   },
   socialIcons: {

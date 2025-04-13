@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 const ForgotPasswordScreen = ({ navigation }) => {
   return (
-    <ImageBackground source={require('../Pictures/blackground-iphone1413.png')} style={styles.background}>
+    <ImageBackground source={require('../../assets/Pictures/blackground-iphone1413.png')} style={styles.background}>
       {/* ส่วนหัว */}
       <View style={styles.container}>
           <TouchableOpacity style={styles.languageIcon} onPress={() => navigation.navigate('Language')} >

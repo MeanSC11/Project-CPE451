@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 const VerificationScreen = ({ navigation }) => {
   return (
-    <ImageBackground source={require('../Pictures/blackground-iphone1413.png')} style={styles.background}>
+    <ImageBackground source={require('../../assets/Pictures/blackground-iphone1413.png')} style={styles.background}>
       <View style={styles.container}>
       {/* ไอคอนเปลี่ยนภาษา */}
       <TouchableOpacity style={styles.languageIcon} onPress={() => navigation.navigate('Language')}>
