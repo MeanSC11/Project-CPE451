@@ -18,12 +18,16 @@ exports.createTravelHistory = async (req, res) => {
 
 // ดึงประวัติทั้งหมด
 exports.getAllTravelHistory = async (req, res) => {
+  const userId = req.user?.userId;
+
   try {
-    const result = await sql.query`SELECT * FROM TravelHistory ORDER BY travel_date DESC`;
+    const result = await sql.query`
+      SELECT * FROM TravelHistory WHERE user_id = ${userId} ORDER BY traveled_at DESC
+    `;
     res.json(result.recordset);
   } catch (err) {
-    console.error("Error fetching travel history:", err);
-    res.status(500).json({ error: "Failed to fetch travel history." });
+    console.error('Error fetching travel history:', err);
+    res.status(500).json({ error: 'Failed to fetch travel history.' });
   }
 };
 

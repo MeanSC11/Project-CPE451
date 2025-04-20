@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ImageBackground, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { login } from '../../services/authService'; // Import login service
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
+import axios from 'axios'; // Import axios for API requests
 
 const SignInScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -18,8 +20,20 @@ const SignInScreen = ({ navigation }) => {
     try {
       console.log(`Attempting login with email: ${email.trim()}`);
       const response = await login(email.trim(), password);
+      await AsyncStorage.setItem('token', response.token); // Save the token to AsyncStorage
+
+      // Fetch user data
+      const userResponse = await axios.get('http://20.244.46.72/api/auth/user', {
+        headers: {
+          Authorization: `Bearer ${response.token}`, // Use the Bearer prefix
+        },
+      });
+
+      const userData = userResponse.data;
+      await AsyncStorage.setItem('userData', JSON.stringify(userData)); // Save user data to AsyncStorage
+
       Alert.alert('Success', 'Signed in successfully');
-      navigation.navigate('MainApp', { screen: 'หน้าหลัก' }); // Updated to "หน้าหลัก"
+      navigation.navigate('MainApp', { screen: 'หน้าหลัก' }); // Navigate to the main app
     } catch (error) {
       console.error("Sign In Error:", error.response?.data || error.message);
       let errorMessage = 'Sign In Failed';

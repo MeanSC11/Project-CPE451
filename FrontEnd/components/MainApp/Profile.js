@@ -4,6 +4,7 @@ import { IconButton } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage to retrieve the token
 
 const Profile = () => {
   const [profileImage, setProfileImage] = useState(null);
@@ -20,22 +21,30 @@ const Profile = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
+        const token = await AsyncStorage.getItem('token'); // Retrieve the token from storage
+        if (!token) {
+          throw new Error('No token found. Please log in again.');
+        }
+
         const response = await axios.get('http://20.244.46.72/api/auth/user', {
           headers: {
-            Authorization: `Bearer YOUR_TOKEN_HERE`, // Replace with actual token
+            Authorization: `Bearer ${token}`, // Include the token in the request headers
           },
         });
-        const { name, phone, email } = response.data;
+
+        const { user_name, user_phone, user_email } = response.data;
         setUserData((prev) => ({
           ...prev,
-          name,
-          phone,
-          email,
+          name: user_name,
+          phone: user_phone,
+          email: user_email,
         }));
       } catch (error) {
-        if (error.response?.status === 404) {
-          console.error('Error fetching user data: Endpoint not found (404)');
-          Alert.alert('Error', 'User data endpoint not found. Please contact support.');
+        if (error.response?.status === 403 || error.message.includes('No token found')) {
+          console.error('Error fetching user data: Invalid or expired token');
+          Alert.alert('Error', 'Your session has expired. Please log in again.', [
+            { text: 'OK', onPress: () => navigation.reset({ index: 0, routes: [{ name: 'Auth', params: { screen: 'SignIn' } }] }) },
+          ]);
         } else {
           console.error('Error fetching user data:', error.message || error);
           Alert.alert('Error', 'Failed to fetch user data.');
@@ -133,7 +142,13 @@ const Profile = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', padding: 20, backgroundColor: '#f5f5f5' },
+  container: { 
+    flex: 1, 
+    alignItems: 'center', 
+    padding: 20, 
+    backgroundColor: '#f5f5f5',
+    marginTop: 60,
+    },
   imageContainer: { alignItems: 'center', marginBottom: 20 },
   profileImage: { width: 100, height: 100, borderRadius: 50, backgroundColor: '#ddd' },
   cameraIcon: { position: 'absolute', bottom: 0, right: 10 },

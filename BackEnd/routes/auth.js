@@ -50,7 +50,11 @@ router.post("/login", async (req, res) => {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
-    const token = Buffer.from(`${user.id}:${user.email}`).toString('base64'); // Simple token
+    // Generate a proper JWT token
+    const token = jwt.sign({ userId: user.user_id, email: user.user_email }, process.env.JWT_SECRET, {
+      expiresIn: "1h", // Token expires in 1 hour
+    });
+
     res.json({ token });
   } catch (error) {
     console.error("Error during login:", error.message);
@@ -71,9 +75,9 @@ router.get('/user', authenticateToken, async (req, res) => {
     }
 
     res.json({
-      name: user.user_name,
-      phone: user.user_phone,
-      email: user.user_email,
+      user_name: user.user_name,
+      user_phone: user.user_phone,
+      user_email: user.user_email,
     });
   } catch (error) {
     console.error('Error fetching user data:', error.message);
