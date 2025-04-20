@@ -11,9 +11,8 @@ const TabBar = ({ state, descriptors, navigation }) => {
         const isFocused = state.index === index;
 
         const icons = {
-          "ตั๋วของคุณ": "ticket",
-          "สถานี": "map-marker",
           "หน้าหลัก": "home",
+          "ตั๋วของคุณ": "ticket",
           "โปรไฟล์": "user",
           "ตั้งค่า": "cog",
         };
@@ -21,7 +20,13 @@ const TabBar = ({ state, descriptors, navigation }) => {
         return (
           <TouchableOpacity
             key={index}
-            onPress={() => navigation.navigate(route.name)}
+            onPress={() => {
+              if (route.name === "หน้าหลัก") {
+                navigation.navigate("หน้าหลัก", { screen: "Home" }); // Updated to "หน้าหลัก"
+              } else {
+                navigation.navigate(route.name);
+              }
+            }}
             style={styles.tabButton}
           >
             <View style={styles.iconWrapper}>

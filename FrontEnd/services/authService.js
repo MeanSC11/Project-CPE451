@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://20.244.46.72/api/auth'; // Updated to use the provided IP address
+const API_URL = 'http://20.244.46.72/api/auth'; // Ensure this matches the BackEnd's base URL
 
 // Set a global timeout for Axios
 const axiosInstance = axios.create({
@@ -10,10 +10,22 @@ const axiosInstance = axios.create({
 
 // ฟังก์ชันสำหรับสมัครสมาชิก
 export const register = async (username, email, phone, password) => {
-  return axiosInstance.post('/signup', { name: username, email, phone, password });
+  try {
+    const response = await axiosInstance.post('/signup', { name: username, email, phone, password });
+    return response.data; // Return the response data
+  } catch (error) {
+    console.error('Register Error:', error.response?.data || error.message);
+    throw error.response?.data || { message: 'Registration failed' }; // Throw a meaningful error
+  }
 };
 
 // ฟังก์ชันสำหรับเข้าสู่ระบบ
 export const login = async (email, password) => {
-  return axiosInstance.post('/login', { email, password });
+  try {
+    const response = await axiosInstance.post('/login', { email, password });
+    return response.data; // Return the response data
+  } catch (error) {
+    console.error('Login Error:', error.response?.data || error.message);
+    throw error.response?.data || { message: 'Login failed' }; // Throw a meaningful error
+  }
 };

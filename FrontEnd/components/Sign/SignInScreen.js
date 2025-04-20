@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ImageBackground, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { login } from '../../services/authService'; // Import login service
 
 const SignInScreen = ({ navigation }) => {
@@ -19,9 +18,8 @@ const SignInScreen = ({ navigation }) => {
     try {
       console.log(`Attempting login with email: ${email.trim()}`);
       const response = await login(email.trim(), password);
-      await AsyncStorage.setItem('userToken', response.data.token); // Save token
       Alert.alert('Success', 'Signed in successfully');
-      navigation.navigate('MainApp', { screen: 'Main Page' }); // Navigate to Main Page tab
+      navigation.navigate('MainApp', { screen: 'หน้าหลัก' }); // Updated to "หน้าหลัก"
     } catch (error) {
       console.error("Sign In Error:", error.response?.data || error.message);
       let errorMessage = 'Sign In Failed';

@@ -24,7 +24,10 @@ const WelcomeScreen = ({ navigation }) => {
           <Text style={styles.signUpText}>SIGN UP</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.startButton} onPress={() => navigation.navigate('MainApp', { screen: 'Main Page' })}>
+        <TouchableOpacity
+          style={styles.startButton}
+          onPress={() => navigation.navigate('MainApp', { screen: 'หน้าหลัก' })} // Updated to "หน้าหลัก"
+        >
           <Text style={styles.startText}>START</Text>
         </TouchableOpacity>
 
