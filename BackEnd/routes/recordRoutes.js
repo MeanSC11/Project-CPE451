@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const travelController = require('../controllers/record');
+const travelController = require('../models/record');
 
 router.post('/', travelController.createTravelHistory);
 router.get('/', travelController.getAllTravelHistory);

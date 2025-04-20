@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 // Controllers
-const { create, list } = require("../controllers/comment");
+const { create, list } = require('../models/comment');
 
 // Define routes for comment
 router.get("/", list);  // GET /comment
