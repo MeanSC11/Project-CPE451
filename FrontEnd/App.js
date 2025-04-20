@@ -18,6 +18,8 @@ import RouteSearchScreen from './components/MainApp/RouteSearchScreen';
 import MapScreen from './components/MainApp/MapScreen';
 import TravelCostScreen from './components/MainApp/TravelCostScreen';
 import SettingsScreen from './components/MainApp/setting';
+import LogoutScreen from './components/MainApp/logout';
+import Profile from './components/MainApp/Profile';
 
 // Create Navigators
 const Stack = createStackNavigator();
@@ -29,7 +31,7 @@ function MainApp() {
     <Tab.Navigator tabBar={(props) => <TabBar {...props} />}>
       <Tab.Screen name="หน้าหลัก" component={HomeStack} options={{ headerShown: false }} />
       <Tab.Screen name="ตั๋วของคุณ" component={TravelCostScreen} options={{ headerShown: false }} />
-      <Tab.Screen name="โปรไฟล์" component={HomeScreen} options={{ headerShown: false }} />
+      <Tab.Screen name="โปรไฟล์" component={Profile} options={{ headerShown: false }} />
       <Tab.Screen name="ตั้งค่า" component={SettingsScreen} options={{ headerShown: false }} />
     </Tab.Navigator>
   );
@@ -68,6 +70,7 @@ export default function App() {
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Auth" component={AuthStack} />
         <Stack.Screen name="MainApp" component={MainApp} />
+        <Stack.Screen name="Logout" component={LogoutScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

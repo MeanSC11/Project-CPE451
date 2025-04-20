@@ -28,4 +28,19 @@ async function createUser(name, email, phone, passwordHash) {
   }
 }
 
-module.exports = { findUserByEmail, createUser };
+// ฟังก์ชันสำหรับค้นหาผู้ใช้จาก ID
+async function findUserById(userId) {
+  try {
+    const result = await sql.query`SELECT * FROM UserApp WHERE user_id = ${userId}`;
+    if (result.recordset.length === 0) {
+      console.warn(`No user found with ID: ${userId}`);
+      return null; // Return null if no user is found
+    }
+    return result.recordset[0]; // Return the first user found
+  } catch (error) {
+    console.error('Database Error in findUserById:', error.message);
+    throw new Error('Failed to fetch user from the database');
+  }
+}
+
+module.exports = { findUserByEmail, createUser, findUserById };

@@ -1,7 +1,8 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { findUserByEmail, createUser } = require("../models/User");
+const { findUserByEmail, createUser, findUserById } = require("../models/user");
+const { authenticateToken } = require("../middleware/authenticate");
 const router = express.Router();
 
 router.post("/signup", async (req, res) => {
@@ -54,6 +55,29 @@ router.post("/login", async (req, res) => {
   } catch (error) {
     console.error("Error during login:", error.message);
     res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.get('/user', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user?.userId;
+    if (!userId) {
+      return res.status(400).json({ message: 'User ID is missing in the request.' });
+    }
+
+    const user = await findUserById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    res.json({
+      name: user.user_name,
+      phone: user.user_phone,
+      email: user.user_email,
+    });
+  } catch (error) {
+    console.error('Error fetching user data:', error.message);
+    res.status(500).json({ message: 'Internal server error.' });
   }
 });
 

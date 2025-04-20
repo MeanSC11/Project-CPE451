@@ -2,12 +2,17 @@ import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const TabBar = ({ state, descriptors, navigation }) => {
+const TabBar = ({ state = {}, descriptors = {}, navigation }) => {
+  if (!state.routes) {
+    console.error("TabBar: 'state.routes' is undefined");
+    return null; // Return null to avoid rendering errors
+  }
+
   return (
     <View style={styles.container}>
       {state.routes.map((route, index) => {
-        const { options } = descriptors[route.key];
-        const label = options.tabBarLabel || route.name;
+        const { options } = descriptors[route.key] || {};
+        const label = options?.tabBarLabel || route.name;
         const isFocused = state.index === index;
 
         const icons = {
@@ -15,6 +20,7 @@ const TabBar = ({ state, descriptors, navigation }) => {
           "ตั๋วของคุณ": "ticket",
           "โปรไฟล์": "user",
           "ตั้งค่า": "cog",
+          "Logout": "sign-out",
         };
 
         return (
@@ -22,7 +28,7 @@ const TabBar = ({ state, descriptors, navigation }) => {
             key={index}
             onPress={() => {
               if (route.name === "หน้าหลัก") {
-                navigation.navigate("หน้าหลัก", { screen: "Home" }); // Updated to "หน้าหลัก"
+                navigation.navigate("หน้าหลัก", { screen: "Home" });
               } else {
                 navigation.navigate(route.name);
               }

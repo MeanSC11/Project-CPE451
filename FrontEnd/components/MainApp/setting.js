@@ -2,27 +2,35 @@ import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
 
-const SettingsScreen = () => {
+const SettingsScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>การตั้งค่า</Text>
 
-      <TouchableOpacity style={styles.item}>
+      {/* เปลี่ยนภาษา */}
+      <TouchableOpacity
+        style={styles.item}
+        onPress={() => navigation.navigate("LanguageSelection")}
+      >
         <FontAwesome5 name="globe" size={20} color="black" />
         <Text style={styles.text}>Language / เปลี่ยนภาษา</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.item}>
-        <Ionicons name="moon" size={20} color="black" />
-        <Text style={styles.text}>Them / โหมดสี</Text>
-      </TouchableOpacity>
 
-      <TouchableOpacity style={styles.item}>
+      {/* แสดงความคิดเห็น */}
+      <TouchableOpacity
+        style={styles.item}
+        onPress={() => navigation.navigate("Comment")}
+      >
         <FontAwesome5 name="comment-alt" size={20} color="black" />
         <Text style={styles.text}>Comment / แสดงความคิดเห็น</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.item}>
+      {/* ออกจากระบบ */}
+      <TouchableOpacity 
+        style={styles.item} 
+        onPress={() => navigation.navigate("Logout")}
+      >
         <Ionicons name="log-out" size={20} color="black" />
         <Text style={styles.text}>Log out / ออกจากระบบ</Text>
       </TouchableOpacity>

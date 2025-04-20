@@ -51,21 +51,20 @@ const SignInScreen = ({ navigation }) => {
         <Text style={styles.title}>START YOUR WAY</Text>
 
         <TextInput
-        style={styles.inputEmail}
-        placeholder="Username or Email"
-        placeholderTextColor="#000"
-        value={email}
-        onChangeText={setEmail}
+          style={styles.inputEmail}
+          placeholder="Username or Email"
+          placeholderTextColor="#000"
+          value={email}
+          onChangeText={setEmail}
         />
         <TextInput
-        style={styles.inputPassword}
-        placeholder="Password"
-        placeholderTextColor="#000"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
+          style={styles.inputPassword}
+          placeholder="Password"
+          placeholderTextColor="#000"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
         />
-
 
         <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
           <Text style={styles.linkForgot}>Forgot Password?</Text>

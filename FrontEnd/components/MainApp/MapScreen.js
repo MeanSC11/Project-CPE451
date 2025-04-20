@@ -103,7 +103,10 @@ const MapScreen = () => {
         <TouchableOpacity style={styles.clearButton} onPress={clearRoute}>
           <Text style={styles.buttonText}>ลบเส้นทางที่ค้นหา</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.serviceRateButton}>
+        <TouchableOpacity 
+          style={styles.serviceRateButton} 
+          onPress={() => navigation.navigate("ตั๋วของคุณ")} // Navigate to TravelCostScreen
+        >
           <Text style={styles.buttonText}>อัตราการบริการ</Text>
         </TouchableOpacity>
       </View>

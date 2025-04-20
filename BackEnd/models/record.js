@@ -1,36 +1,29 @@
-const { PrismaClient } = require('../generated/prisma');
-const prisma = new PrismaClient();
+const sql = require("../config/db");
 
 // สร้างประวัติการเดินทางใหม่
 exports.createTravelHistory = async (req, res) => {
   const { travelDate, startStation, endStation, travelTime } = req.body;
 
   try {
-    const newHistory = await prisma.travelHistory.create({
-      data: {
-        travelDate: new Date(travelDate),
-        startStation,
-        endStation,
-        travelTime,
-      },
-    });
-    res.status(201).json(newHistory);
+    await sql.query`
+      INSERT INTO TravelHistory (travel_date, start_station, end_station, travel_time)
+      VALUES (${travelDate}, ${startStation}, ${endStation}, ${travelTime})
+    `;
+    res.status(201).json({ message: "Travel history created successfully." });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Create failed' });
+    console.error("Error creating travel history:", err);
+    res.status(500).json({ error: "Failed to create travel history." });
   }
 };
 
 // ดึงประวัติทั้งหมด
 exports.getAllTravelHistory = async (req, res) => {
   try {
-    const histories = await prisma.travelHistory.findMany({
-      orderBy: { travelDate: 'desc' },
-    });
-    res.json(histories);
+    const result = await sql.query`SELECT * FROM TravelHistory ORDER BY travel_date DESC`;
+    res.json(result.recordset);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Fetch failed' });
+    console.error("Error fetching travel history:", err);
+    res.status(500).json({ error: "Failed to fetch travel history." });
   }
 };
 
@@ -39,18 +32,14 @@ exports.getTravelHistoryById = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const history = await prisma.travelHistory.findUnique({
-      where: { id: parseInt(id) },
-    });
-
-    if (!history) {
-      return res.status(404).json({ error: 'Not found' });
+    const result = await sql.query`SELECT * FROM TravelHistory WHERE travel_id = ${id}`;
+    if (result.recordset.length === 0) {
+      return res.status(404).json({ error: "Travel history not found." });
     }
-
-    res.json(history);
+    res.json(result.recordset[0]);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Fetch failed' });
+    console.error("Error fetching travel history by ID:", err);
+    res.status(500).json({ error: "Failed to fetch travel history." });
   }
 };
 
@@ -59,13 +48,11 @@ exports.deleteTravelHistory = async (req, res) => {
   const { id } = req.params;
 
   try {
-    await prisma.travelHistory.delete({
-      where: { id: parseInt(id) },
-    });
-    res.json({ message: 'Deleted successfully' });
+    await sql.query`DELETE FROM TravelHistory WHERE travel_id = ${id}`;
+    res.json({ message: "Travel history deleted successfully." });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Delete failed' });
+    console.error("Error deleting travel history:", err);
+    res.status(500).json({ error: "Failed to delete travel history." });
   }
 };
 
@@ -75,19 +62,14 @@ exports.updateTravelHistory = async (req, res) => {
   const { travelDate, startStation, endStation, travelTime } = req.body;
 
   try {
-    const updated = await prisma.travelHistory.update({
-      where: { id: parseInt(id) },
-      data: {
-        travelDate: new Date(travelDate),
-        startStation,
-        endStation,
-        travelTime,
-      },
-    });
-
-    res.json(updated);
+    await sql.query`
+      UPDATE TravelHistory
+      SET travel_date = ${travelDate}, start_station = ${startStation}, end_station = ${endStation}, travel_time = ${travelTime}
+      WHERE travel_id = ${id}
+    `;
+    res.json({ message: "Travel history updated successfully." });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Update failed' });
+    console.error("Error updating travel history:", err);
+    res.status(500).json({ error: "Failed to update travel history." });
   }
 };

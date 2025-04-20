@@ -13,7 +13,7 @@ const TravelCostScreen = () => {
   useEffect(() => {
     const fetchTravelData = async () => {
       try {
-        const response = await fetch("http://20.244.46.72/api/travel", {
+        const response = await fetch("http://20.244.46.72/api/record", { // Ensure the endpoint is correct
           method: "GET",
         });
 
@@ -24,7 +24,7 @@ const TravelCostScreen = () => {
         const data = await response.json();
         setTravelData(data);
       } catch (error) {
-        console.error("Error fetching travel data:", error);
+        console.error("Error fetching travel data:", error.message || error);
         setError(error.message || "Unknown error");
       } finally {
         setLoading(false);
