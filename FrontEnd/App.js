@@ -10,8 +10,8 @@ import SignUpScreen from './components/Sign/SignUpScreen';
 import ForgotPasswordScreen from './components/Sign/ForgotPasswordScreen';
 import VerificationScreen from './components/Sign/VerificationScreen';
 import NewPasswordScreen from './components/Sign/NewPasswordScreen';
-import LanguageScreen from './components/Sign/LanguageScreen';
 
+import LanguageScreen from './components/MainApp/LanguageScreen';
 import HomeScreen from './components/MainApp/HomeScreen';
 import TabBar from './components/MainApp/TabBar';
 import RouteSearchScreen from './components/MainApp/RouteSearchScreen';
@@ -20,22 +20,14 @@ import TravelCostScreen from './components/MainApp/TravelCostScreen';
 import SettingsScreen from './components/MainApp/setting';
 import LogoutScreen from './components/MainApp/logout';
 import Profile from './components/MainApp/Profile';
+import RecordScreen from './components/MainApp/record';
+import CommentScreen from './components/MainApp/comment'; // Import the CommentScreen
+import Ticket from './components/MainApp/Ticket'; // Import Ticket.js
+import PaymentScreen from './components/MainApp/payment'; // Import PaymentScreen
 
 // Create Navigators
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
-
-// 🏠 **Main App (Tab Navigation)** - Tab Navigator for the main app
-function MainApp() {
-  return (
-    <Tab.Navigator tabBar={(props) => <TabBar {...props} />}>
-      <Tab.Screen name="หน้าหลัก" component={HomeStack} options={{ headerShown: false }} />
-      <Tab.Screen name="ตั๋วของคุณ" component={TravelCostScreen} options={{ headerShown: false }} />
-      <Tab.Screen name="โปรไฟล์" component={Profile} options={{ headerShown: false }} />
-      <Tab.Screen name="ตั้งค่า" component={SettingsScreen} options={{ headerShown: false }} />
-    </Tab.Navigator>
-  );
-}
 
 // 🏠 **Home Stack** - Stack Navigator for the home screen
 function HomeStack() {
@@ -44,6 +36,44 @@ function HomeStack() {
       <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
       <Stack.Screen name="RouteSearch" component={RouteSearchScreen} options={{ headerShown: false }} />
       <Stack.Screen name="Map" component={MapScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="TravelCostScreen" component={TravelCostScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Payment" component={PaymentScreen} options={{ headerShown: false }} />
+    </Stack.Navigator>
+  );
+}
+
+// 🏠 **Main App (Tab Navigation)** - Tab Navigator for the main app
+function MainApp() {
+  return (
+    <Tab.Navigator
+      screenOptions={{ headerShown: false }}
+      tabBar={(props) => <TabBar {...props} />} // Ensure TabBar is passed correctly
+    >
+      <Tab.Screen name="หน้าหลัก" component={HomeStack} options={{ headerShown: false }} />
+      <Tab.Screen name="ตั๋วของคุณ" component={Ticket} options={{ headerShown: false }} />
+      <Tab.Screen name="โปรไฟล์" component={ProfileStack} options={{ headerShown: false }} />
+      <Tab.Screen name="ตั้งค่า" component={SettingsStack} options={{ headerShown: false }} />
+    </Tab.Navigator>
+  );
+}
+
+// 🏠 **Profile Stack** - Stack Navigator for the profile screen
+function ProfileStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
+      <Stack.Screen name="Record" component={RecordScreen} options={{ headerShown: false }} />
+    </Stack.Navigator>
+  );
+}
+
+// 🛠️ **Settings Stack** - Stack Navigator for the settings screen
+function SettingsStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Settings" component={SettingsScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="LanguageScreen" component={LanguageScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Comment" component={CommentScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 }

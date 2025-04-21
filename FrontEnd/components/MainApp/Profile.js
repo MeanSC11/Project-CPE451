@@ -5,6 +5,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage to retrieve the token
+import { API_URL } from "../../services/authService"; // Updated import
 
 const Profile = () => {
   const [profileImage, setProfileImage] = useState(null);
@@ -26,7 +27,7 @@ const Profile = () => {
           throw new Error('No token found. Please log in again.');
         }
 
-        const response = await axios.get('http://20.244.46.72/api/auth/user', {
+        const response = await axios.get(`${API_URL}/user`, { // Use API_URL
           headers: {
             Authorization: `Bearer ${token}`, // Include the token in the request headers
           },
@@ -147,11 +148,23 @@ const styles = StyleSheet.create({
     alignItems: 'center', 
     padding: 20, 
     backgroundColor: '#f5f5f5',
-    marginTop: 60,
     },
-  imageContainer: { alignItems: 'center', marginBottom: 20 },
-  profileImage: { width: 100, height: 100, borderRadius: 50, backgroundColor: '#ddd' },
-  cameraIcon: { position: 'absolute', bottom: 0, right: 10 },
+  imageContainer: { 
+    alignItems: 'center', 
+    marginBottom: 20,
+    marginTop: 40,
+  },
+  profileImage: { 
+    width: 100, 
+    height: 100, 
+    borderRadius: 50, 
+    backgroundColor: '#ddd' 
+  },
+  cameraIcon: { 
+    position: 'absolute', 
+    bottom: 0, 
+    right: 10 
+  },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -161,10 +174,30 @@ const styles = StyleSheet.create({
     padding: 10,
     marginVertical: 5,
   },
-  text: { flex: 1, fontSize: 16, color: '#333' },
-  input: { flex: 1, fontSize: 16, color: '#000', backgroundColor: '#fff', borderRadius: 5, padding: 5 },
-  historyButton: { backgroundColor: '#4CAF50', width: '90%', padding: 15, borderRadius: 10, alignItems: 'center', marginTop: 20 },
-  historyText: { color: 'white', fontSize: 16 },
+  text: { flex: 1, 
+    fontSize: 16, 
+    color: '#333' 
+  },
+  input: { 
+    flex: 1, 
+    fontSize: 16, 
+    color: '#000', 
+    backgroundColor: '#fff', 
+    borderRadius: 5, 
+    padding: 5 
+  },
+  historyButton: { 
+    backgroundColor: '#4CAF50',
+    width: '90%', 
+    padding: 15, 
+    borderRadius: 10, 
+    alignItems: 'center', 
+    marginTop: 20 
+  },
+  historyText: { 
+    color: 'white', 
+    fontSize: 16 
+  },
 });
 
 export default Profile;

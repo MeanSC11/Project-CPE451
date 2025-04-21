@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ImageBackground, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { register } from '../../services/authService'; // Import register service
+import { register } from '../../services/authService'; // Ensure register uses API_URL
 
 const SignUpScreen = ({ navigation }) => {
   const [fullName, setFullName] = useState('');
@@ -30,7 +30,7 @@ const SignUpScreen = ({ navigation }) => {
 
     setLoading(true); // Show loading spinner
     try {
-      await register(fullName.trim(), email.trim(), phone.trim(), password);
+      await register(fullName.trim(), email.trim(), phone.trim(), password); // Use the updated register function
       Alert.alert('Success', 'Account created successfully');
       navigation.navigate('SignIn');
     } catch (error) {

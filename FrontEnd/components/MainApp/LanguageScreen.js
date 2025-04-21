@@ -33,12 +33,30 @@ const LanguageScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  title: { fontSize: 24, fontWeight: 'bold', marginBottom: 20 },
-  backButton: { position: 'absolute', top: 50, left: 20 },
-  backText: { fontSize: 24 },
-  langButton: { padding: 15, margin: 10, borderWidth: 1, borderRadius: 5 },
-  langText: { fontSize: 18 }
+  container: { flex: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center' 
+  },
+  title: { fontSize: 24, 
+    fontWeight: 'bold', 
+    marginBottom: 20 
+  },
+  backButton: { 
+    position: 'absolute', 
+    top: 50, 
+    left: 20 },
+  backText: { 
+    fontSize: 24 
+  },
+  langButton: { 
+    padding: 15, 
+    margin: 10, 
+    borderWidth: 1, 
+    borderRadius: 5 
+  },
+  langText: { 
+    fontSize: 18 
+  }
 });
 
 export default LanguageScreen;

@@ -3,9 +3,19 @@ import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 const TabBar = ({ state = {}, descriptors = {}, navigation }) => {
-  if (!state.routes) {
-    console.error("TabBar: 'state.routes' is undefined");
-    return null; // Return null to avoid rendering errors
+  console.log("TabBar state:", state); // Debugging log
+  console.log("TabBar state.routes:", state?.routes); // Debugging log
+
+  // ตรวจสอบว่า state.routes มีค่าหรือไม่
+  if (!state || !state.routes || !Array.isArray(state.routes)) {
+    console.error("TabBar: 'state.routes' is undefined or invalid");
+    return (
+      <View style={{ padding: 10 }}>
+        <Text style={{ color: 'red', textAlign: 'center' }}>
+          TabBar Error: Invalid state.routes
+        </Text>
+      </View>
+    ); // Render fallback UI
   }
 
   return (

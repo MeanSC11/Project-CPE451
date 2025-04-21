@@ -10,7 +10,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 const MapScreen = () => {
   const route = useRoute();
-  const { startStation, endStation } = route.params || {}; // รับข้อมูลสถานีต้นทาง, ปลายทาง 
+  const { startStation, endStation } = route.params || {}; // Receive startStation and endStation
   const [routeCoordinates, setRouteCoordinates] = useState([]);
   const [endStationVisible, setEndStationVisible] = useState(true); // เพิ่มสถานะสำหรับแสดงหมุดปลายทาง
   const navigation = useNavigation();
@@ -105,7 +105,7 @@ const MapScreen = () => {
         </TouchableOpacity>
         <TouchableOpacity 
           style={styles.serviceRateButton} 
-          onPress={() => navigation.navigate("ตั๋วของคุณ")} // Navigate to TravelCostScreen
+          onPress={() => navigation.navigate("TravelCostScreen", { startStation, endStation })} // Pass startStation and endStation
         >
           <Text style={styles.buttonText}>อัตราการบริการ</Text>
         </TouchableOpacity>

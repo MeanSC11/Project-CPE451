@@ -156,7 +156,7 @@ const RouteSearchScreen = () => {
 
   const onPress = () => {
     if (startStation && endStation) {
-      navigation.navigate('Map', { startStation, endStation });
+      navigation.navigate('Map', { startStation, endStation }); // Pass startStation and endStation
     } else {
       Alert.alert('กรุณากรอกสถานีต้นทางและปลายทาง');
     }
@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
   container: { 
     flex: 1, 
     backgroundColor: '#ffffff', 
-    padding: 20 
+    padding: 40 
   },
   header: { 
     backgroundColor: '#ffffff', 

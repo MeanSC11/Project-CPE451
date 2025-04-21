@@ -8,9 +8,12 @@ import {
   Image,
   ScrollView,
   StyleSheet,
+  ActivityIndicator,
+  Modal,
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const PaymentScreen = () => {
   const navigation = useNavigation();
@@ -18,31 +21,39 @@ const PaymentScreen = () => {
   const [slipImage, setSlipImage] = useState(null);
   const [slipFile, setSlipFile] = useState(null);
   const [slipData, setSlipData] = useState(null);
+  const [loading, setLoading] = useState(false);
+
   const amount = route.params?.amount || 15;
-  const referenceNumber = route.params?.referenceNumber || "DEFAULT_REF";
   const startStation = route.params?.startStation || "สถานีต้นทาง";
   const endStation = route.params?.endStation || "สถานีปลายทาง";
 
   const pickImage = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== "granted") {
-      Alert.alert("กรุณาอนุญาตเข้าถึงคลังภาพ");
-      return;
-    }
+    try {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert("การอนุญาตถูกปฏิเสธ", "กรุณาอนุญาตให้แอปเข้าถึงคลังภาพ");
+        return;
+      }
 
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      const asset = result.assets[0];
-      setSlipImage(asset.uri);
-      setSlipFile({
-        uri: asset.uri,
-        name: "slip.jpg",
-        type: "image/jpeg",
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality: 1,
       });
+
+      if (!result.canceled) {
+        const asset = result.assets[0];
+        setSlipImage(asset.uri);
+        setSlipFile({
+          uri: asset.uri,
+          name: "slip.jpg",
+          type: "image/jpeg",
+        });
+      } else {
+        console.log("การเลือกภาพถูกยกเลิก");
+      }
+    } catch (error) {
+      console.error("Error picking image:", error.message);
+      Alert.alert("เกิดข้อผิดพลาด", "ไม่สามารถเลือกภาพได้");
     }
   };
 
@@ -52,71 +63,78 @@ const PaymentScreen = () => {
       return;
     }
 
+    setLoading(true);
     const formData = new FormData();
     formData.append("files", slipFile);
-    formData.append("referenceNumber", referenceNumber);
 
     try {
-      const response = await fetch("http://172.20.10.21:5000/slipok", {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        throw new Error("No token found. Please log in again.");
+      }
+
+      console.log("Uploading slip to API with token:", token);
+      const response = await fetch("http://20.244.46.72:5000/api/auth/slip", {
         method: "POST",
         body: formData,
         headers: {
           "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
         },
       });
 
       if (response.ok) {
         const data = await response.json();
-        setSlipData(data);
+        console.log("Upload successful:", data);
+        setSlipData(data.data);
+
         Alert.alert("สำเร็จ", "อัปโหลดสลิปเรียบร้อย", [
           {
-            text: "ไปยังตั๋ว",
+            text: "ไปที่ตั๋วของคุณ",
             onPress: () =>
-              navigation.navigate("Ticket", {
+              navigation.navigate("ตั๋วของคุณ", {
                 startStation,
                 endStation,
               }),
           },
         ]);
       } else {
+        const errorText = await response.text();
+        console.error("Server Error:", errorText);
         Alert.alert("ผิดพลาด", "การอัปโหลดล้มเหลว");
       }
     } catch (error) {
-      console.error("Upload error:", error);
-      Alert.alert("เกิดข้อผิดพลาด", "ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้");
+      console.error("Upload error:", error.message);
+      Alert.alert("เกิดข้อผิดพลาด", error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Image source={require("../assets/payment.jpg")} style={styles.icon} />
+      <Modal visible={loading} transparent animationType="fade">
+        <View style={styles.loadingOverlay}>
+          <ActivityIndicator size="large" color="#0077b6" />
+          <Text style={styles.loadingText}>กำลังตรวจสอบ...</Text>
+        </View>
+      </Modal>
+
+      <Image source={require("../../assets/Pictures/QRcode.jpg")} style={styles.icon} />
 
       <View style={styles.amountContainer}>
         <Text style={styles.amountText}>{amount} บาท</Text>
       </View>
-
-
 
       {slipImage && <Image source={{ uri: slipImage }} style={styles.slipImage} />}
 
       {slipData && (
         <View style={styles.slipInfo}>
           <Text style={styles.headerText}>🚈 SKY TRAIN</Text>
-          <Text>👤 ความสำเร็จ: {slipData?.success ? "True" : "False"}</Text>
-          <Text>👤 ข้อความ: {slipData?.data?.message}</Text>
-          <Text>👤 ชื่อผู้โอน: {slipData?.data?.sender?.displayName}</Text>
-          <Text>👤 ชื่อผู้รับ: {slipData?.data?.receiver?.displayName}</Text>
-          <Text>💰 จำนวนเงิน: {slipData?.data?.amount} บาท</Text>
-
-          {slipData?.data?.qrCodeImage && (
-            <>
-              <Text style={{ marginTop: 10 }}>QR Code:</Text>
-              <Image
-                source={{ uri: slipData.data.qrCodeImage }}
-                style={styles.qrImage}
-              />
-            </>
-          )}
+          <Text>📱 หมายเลขพร้อมเพย์: {slipData.promptPayNumber || "N/A"}</Text>
+          <Text>👤 ชื่อบัญชีผู้รับ: {slipData.receiverName || "N/A"}</Text>
+          <Text>💰 จำนวนเงิน: {slipData.amount || "N/A"} บาท</Text>
+          <Text>🔑 รหัสอ้างอิง: {slipData.reference || "N/A"}</Text>
         </View>
       )}
 
@@ -148,24 +166,25 @@ const styles = StyleSheet.create({
     width: 350,
     height: 500,
     marginBottom: 20,
+    marginTop: 50,
   },
   amountContainer: {
-    marginTop: 5  ,
+    marginTop: 5,
     backgroundColor: "#ddd",
     padding: 20,
     borderRadius: 10,
-    justifyContent: 'center',  // Center the content vertically
-    alignItems: 'center',      // Center the content horizontally
+    justifyContent: "center",
+    alignItems: "center",
   },
   amountText: {
-    fontSize: 25,  // ปรับขนาดฟอนต์ที่นี่
-    fontWeight: 'bold',  // หากต้องการให้ตัวหนังสือหนา
-    color: '#2d6a4f',  // ปรับสีตามต้องการ
+    fontSize: 25,
+    fontWeight: "bold",
+    color: "#2d6a4f",
   },
   slipImage: {
     width: 400,
     height: 450,
-    marginTop: 20,
+    marginTop: 15,
     borderRadius: 10,
   },
   buttonContainer: {
@@ -222,11 +241,16 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#2980b9",
   },
-  qrImage: {
-    width: 150,
-    height: 150,
-    alignSelf: "center",
+  loadingOverlay: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  loadingText: {
     marginTop: 10,
+    fontSize: 16,
+    color: "#fff",
   },
 });
 

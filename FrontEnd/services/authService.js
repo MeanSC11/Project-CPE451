@@ -1,11 +1,10 @@
 import axios from 'axios';
 
-const API_URL = 'http://20.244.46.72/api/auth'; // Ensure this matches the BackEnd's base URL
+const API_URL = 'http://20.244.46.72/api/auth'; // Updated base URL
 
-// Set a global timeout for Axios
 const axiosInstance = axios.create({
   baseURL: API_URL,
-  timeout: 10000, // Set timeout to 10 seconds
+  timeout: 10000,
 });
 
 // ฟังก์ชันสำหรับสมัครสมาชิก
@@ -29,3 +28,5 @@ export const login = async (email, password) => {
     throw error.response?.data || { message: 'Login failed' }; // Throw a meaningful error
   }
 };
+
+export { API_URL, axiosInstance }; // Export API_URL for use in other files

@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     fontSize: 30, 
     marginBottom: 10, 
     alignSelf: 'center',
-    marginTop: 20,
+    marginTop: 40,
   },
   pinBox: { 
     padding: 15, 

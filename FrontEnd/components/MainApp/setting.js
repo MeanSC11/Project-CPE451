@@ -10,7 +10,7 @@ const SettingsScreen = ({ navigation }) => {
       {/* เปลี่ยนภาษา */}
       <TouchableOpacity
         style={styles.item}
-        onPress={() => navigation.navigate("LanguageSelection")}
+        onPress={() => navigation.navigate("LanguageScreen")} // Updated to navigate to LanguageScreen.js
       >
         <FontAwesome5 name="globe" size={20} color="black" />
         <Text style={styles.text}>Language / เปลี่ยนภาษา</Text>
@@ -20,7 +20,7 @@ const SettingsScreen = ({ navigation }) => {
       {/* แสดงความคิดเห็น */}
       <TouchableOpacity
         style={styles.item}
-        onPress={() => navigation.navigate("Comment")}
+        onPress={() => navigation.navigate("Comment")} // Updated to navigate to comment.js
       >
         <FontAwesome5 name="comment-alt" size={20} color="black" />
         <Text style={styles.text}>Comment / แสดงความคิดเห็น</Text>
@@ -48,6 +48,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 20,
+    marginTop: 40,
   },
   item: {
     flexDirection: "row",
