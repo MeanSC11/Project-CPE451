@@ -1,79 +1,37 @@
-const sql = require("../config/db");
+const sql = require('../config/db'); // Corrected import for mssql
 
-// สร้างประวัติการเดินทางใหม่
-exports.createTravelHistory = async (req, res) => {
-  const { travelDate, startStation, endStation, travelTime } = req.body;
-
+// Fetch travel history for a specific user
+const getTravelHistoryByUserId = async (userId) => {
   try {
-    await sql.query`
-      INSERT INTO TravelHistory (travel_date, start_station, end_station, travel_time)
-      VALUES (${travelDate}, ${startStation}, ${endStation}, ${travelTime})
+    console.log('Executing query for userId:', userId); // Debug log
+    const query = `
+      SELECT 
+        th.travel_id,
+        th.from_station_id,
+        th.to_station_id,
+        th.travel_price,
+        th.traveled_at,
+        s1.station_name AS from_station_name,
+        s2.station_name AS to_station_name
+      FROM 
+        TravelHistory th
+      JOIN 
+        Stations s1 ON th.from_station_id = s1.station_id
+      JOIN 
+        Stations s2 ON th.to_station_id = s2.station_id
+      WHERE 
+        th.user_id = @userId;
     `;
-    res.status(201).json({ message: "Travel history created successfully." });
-  } catch (err) {
-    console.error("Error creating travel history:", err);
-    res.status(500).json({ error: "Failed to create travel history." });
+
+    const request = new sql.Request();
+    request.input('userId', sql.Int, userId); // Pass userId as a parameter
+    const result = await request.query(query); // Execute the query
+    console.log('Query result:', result.recordset); // Debug log
+    return result.recordset;
+  } catch (error) {
+    console.error('Database query error:', error.message);
+    throw new Error('Failed to fetch travel history from the database.');
   }
 };
 
-// ดึงประวัติทั้งหมด
-exports.getAllTravelHistory = async (req, res) => {
-  const userId = req.user?.userId;
-
-  try {
-    const result = await sql.query`
-      SELECT * FROM TravelHistory WHERE user_id = ${userId} ORDER BY traveled_at DESC
-    `;
-    res.json(result.recordset);
-  } catch (err) {
-    console.error('Error fetching travel history:', err);
-    res.status(500).json({ error: 'Failed to fetch travel history.' });
-  }
-};
-
-// ดึงประวัติตาม id
-exports.getTravelHistoryById = async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const result = await sql.query`SELECT * FROM TravelHistory WHERE travel_id = ${id}`;
-    if (result.recordset.length === 0) {
-      return res.status(404).json({ error: "Travel history not found." });
-    }
-    res.json(result.recordset[0]);
-  } catch (err) {
-    console.error("Error fetching travel history by ID:", err);
-    res.status(500).json({ error: "Failed to fetch travel history." });
-  }
-};
-
-// ลบประวัติ
-exports.deleteTravelHistory = async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    await sql.query`DELETE FROM TravelHistory WHERE travel_id = ${id}`;
-    res.json({ message: "Travel history deleted successfully." });
-  } catch (err) {
-    console.error("Error deleting travel history:", err);
-    res.status(500).json({ error: "Failed to delete travel history." });
-  }
-};
-
-// อัปเดตประวัติ
-exports.updateTravelHistory = async (req, res) => {
-  const { id } = req.params;
-  const { travelDate, startStation, endStation, travelTime } = req.body;
-
-  try {
-    await sql.query`
-      UPDATE TravelHistory
-      SET travel_date = ${travelDate}, start_station = ${startStation}, end_station = ${endStation}, travel_time = ${travelTime}
-      WHERE travel_id = ${id}
-    `;
-    res.json({ message: "Travel history updated successfully." });
-  } catch (err) {
-    console.error("Error updating travel history:", err);
-    res.status(500).json({ error: "Failed to update travel history." });
-  }
-};
+module.exports = { getTravelHistoryByUserId };

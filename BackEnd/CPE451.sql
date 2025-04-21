@@ -113,15 +113,15 @@ SELECT * FROM Comments;
 INSERT INTO TravelHistory (user_id, from_station_id, to_station_id, travel_price, traveled_at)
 VALUES 
 (1, 'N24', 'N20', 60.00, GETDATE()), -- User 1 travels from N24 to N20
-(2, 'N15', 'N10', 75.00, GETDATE()), -- User 2 travels from N15 to N10
-(3, 'E1', 'E5', 60.00, GETDATE());  -- User 3 travels from E1 to E5
+(1, 'N15', 'N10', 75.00, GETDATE()), -- User 2 travels from N15 to N10
+(1, 'E1', 'E5', 60.00, GETDATE());  -- User 3 travels from E1 to E5
 
 -- Insert sample data into Comments for testing
 INSERT INTO Comments (content, user_id, travel_id)
 VALUES 
 (N'การเดินทางสะดวกมาก', 1, 1),
 (N'สถานีสะอาดและปลอดภัย', 2, 2),
-(N'ค่าโดยสารเหมาะสม', 3, 3);
+;
 
 DROP TABLE Comments;
 DROP TABLE TravelHistory;
