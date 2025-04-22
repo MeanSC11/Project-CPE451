@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ImageBackground, StyleSheet, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ImageBackground, StyleSheet, Alert, ActivityIndicator, LogBox } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { login } from '../../services/authService'; // Import login service
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 import axios from 'axios'; // Import axios for API requests
+
+// Suppress the warning about text strings
+LogBox.ignoreLogs(['Warning: Text strings must be rendered within a <Text> component']);
 
 const SignInScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');

@@ -8,11 +8,11 @@ const Welcome = () => {
   return (
     <View style={styles.container}>
       {/* Background Image */}
-      <Image source={require("../assets/photo/back.png")} style={styles.backgroundImage} />
+      <Image source={require("../../assets/Pictures/back.png")} style={styles.backgroundImage} />
 
       {/* Logo */}
       <View style={styles.logoContainer}>
-        <Image source={require("../assets/photo/logo_skytrain.png")} style={styles.logo} />
+        <Image source={require("../../assets/Pictures/logo_skytrain.png")} style={styles.logo} />
       </View>
 
       {/* Get Started Button */}

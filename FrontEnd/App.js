@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 // Import Screens
+import Welcome from './components/MainApp/Welcome'; // Import Welcome.js
 import WelcomeScreen from './components/Sign/WelcomeScreen';
 import SignInScreen from './components/Sign/SignInScreen';
 import SignUpScreen from './components/Sign/SignUpScreen';
@@ -82,11 +83,10 @@ function SettingsStack() {
 function AuthStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Welcome" component={WelcomeScreen} />
+      <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
       <Stack.Screen name="SignIn" component={SignInScreen} />
       <Stack.Screen name="SignUp" component={SignUpScreen} />
       <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
-      <Stack.Screen name="Verification" component={VerificationScreen} />
       <Stack.Screen name="NewPassword" component={NewPasswordScreen} />
       <Stack.Screen name="Language" component={LanguageScreen} />
     </Stack.Navigator>

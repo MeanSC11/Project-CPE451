@@ -5,7 +5,8 @@ const uploadSlip = async (req, res) => {
   const file = req.file;
 
   if (!file) {
-    return res.status(400).json({ error: 'No file uploaded' });
+    console.error("No file uploaded in the request."); // Debug log
+    return res.status(400).json({ error: 'No file uploaded. Please attach a file and try again.' });
   }
 
   const formData = new FormData();
@@ -18,7 +19,6 @@ const uploadSlip = async (req, res) => {
     console.log("API_URL:", process.env.API_URL); // Debug log
     console.log("API_KEY:", process.env.API_KEY); // Debug log
 
-    // Retry logic with timeout
     const response = await axios.post(process.env.API_URL, formData, {
       headers: {
         ...formData.getHeaders(),
@@ -27,7 +27,7 @@ const uploadSlip = async (req, res) => {
       timeout: 10000, // Set timeout to 10 seconds
     });
 
-    const slipData = response.data; // Use actual response data
+    const slipData = response.data;
     res.json({
       success: true,
       data: slipData,

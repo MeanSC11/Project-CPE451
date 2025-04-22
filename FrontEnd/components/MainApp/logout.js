@@ -1,10 +1,21 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LogoutScreen = ({ navigation }) => {
-  const handleLogout = () => {
-    // Clear user session or token here
-    navigation.navigate('SignIn'); // Redirect to SignIn screen
+  const handleLogout = async () => {
+    try {
+      // Clear user session or token
+      await AsyncStorage.removeItem('token');
+      Alert.alert('Logged Out', 'You have been logged out successfully.');
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'WelcomeScreen' }], // Navigate to WelcomeScreen
+      });
+    } catch (error) {
+      console.error('Error during logout:', error.message);
+      Alert.alert('Error', 'Failed to log out. Please try again.');
+    }
   };
 
   return (

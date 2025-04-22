@@ -9,14 +9,19 @@ import {
   ScrollView,
   StyleSheet,
   Modal,
+  ActivityIndicator,
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { API_URL } from "../../services/authService"; // Ensure API_URL is correctly imported
 
 const PaymentScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const [slipImage, setSlipImage] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [slipData, setSlipData] = useState(null); // Add state for slipData
 
   const amount = route.params?.amount || 15;
   const startStation = route.params?.startStation || "สถานีต้นทาง";
@@ -47,26 +52,72 @@ const PaymentScreen = () => {
     }
   };
 
-  const uploadSlipAndVerify = () => {
+  const uploadSlipAndVerify = async () => {
     if (!slipImage) {
       Alert.alert("กรุณาอัปโหลดสลิปก่อน");
       return;
     }
 
-    Alert.alert("สำเร็จ", "ชำระเงินสำเร็จ", [
-      {
-        text: "ไปที่ตั๋วของคุณ",
-        onPress: () =>
-          navigation.navigate("ตั๋วของคุณ", {
-            startStation,
-            endStation,
-          }),
-      },
-    ]);
+    setLoading(true);
+
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        throw new Error("No token found. Please log in again.");
+      }
+
+      const formData = new FormData();
+      formData.append("files", {
+        uri: slipImage,
+        name: "slip.jpg",
+        type: "image/jpeg",
+      });
+
+      const response = await fetch(`${API_URL.replace("/auth", "")}/slip`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Upload successful:", data);
+        setSlipData(data); // Save slipData to state
+        Alert.alert("สำเร็จ", "ชำระเงินสำเร็จ", [
+          {
+            text: "ไปที่ตั๋วของคุณ",
+            onPress: () =>
+              navigation.navigate("ตั๋วของคุณ", {
+                startStation,
+                endStation,
+              }),
+          },
+        ]);
+      } else {
+        const errorText = await response.text();
+        console.error("Server Error:", errorText);
+        Alert.alert("ผิดพลาด", "การอัปโหลดล้มเหลว");
+      }
+    } catch (error) {
+      console.error("Upload error:", error.message);
+      Alert.alert("เกิดข้อผิดพลาด", error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      <Modal visible={loading} transparent animationType="fade">
+        <View style={styles.loadingOverlay}>
+          <ActivityIndicator size="large" color="#0077b6" />
+          <Text style={styles.loadingText}>กำลังตรวจสอบ...</Text>
+        </View>
+      </Modal>
+
       <Image source={require("../../assets/Pictures/QRcode.jpg")} style={styles.icon} />
 
       <View style={styles.amountContainer}>
@@ -74,6 +125,27 @@ const PaymentScreen = () => {
       </View>
 
       {slipImage && <Image source={{ uri: slipImage }} style={styles.slipImage} />}
+
+      {slipData && (
+        <View style={styles.slipInfo}>
+          <Text style={styles.headerText}>🚈 SKY TRAIN</Text>
+          <Text>👤 ความสำเร็จ: {slipData?.success ? "True" : "False"}</Text>
+          <Text>👤 ข้อความ: {slipData?.data?.message}</Text>
+          <Text>👤 ชื่อผู้โอน: {slipData?.data?.sender?.displayName}</Text>
+          <Text>👤 ชื่อผู้รับ: {slipData?.data?.receiver?.displayName}</Text>
+          <Text>💰 จำนวนเงิน: {slipData?.data?.amount} บาท</Text>
+
+          {slipData?.data?.qrCodeImage && (
+            <>
+              <Text style={{ marginTop: 10 }}>QR Code:</Text>
+              <Image
+                source={{ uri: slipData.data.qrCodeImage }}
+                style={styles.qrImage}
+              />
+            </>
+          )}
+        </View>
+      )}
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity onPress={pickImage} style={styles.saveButton}>
@@ -163,6 +235,37 @@ const styles = StyleSheet.create({
   backButtonText: {
     color: "#2d6a4f",
     fontSize: 16,
+  },
+  loadingOverlay: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: "#fff",
+  },
+  slipInfo: {
+    marginTop: 30,
+    backgroundColor: "#ecf0f1",
+    padding: 15,
+    borderRadius: 8,
+    width: "100%",
+  },
+  headerText: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 10,
+    textAlign: "center",
+    color: "#2980b9",
+  },
+  qrImage: {
+    width: 150,
+    height: 150,
+    alignSelf: "center",
+    marginTop: 10,
   },
 });
 

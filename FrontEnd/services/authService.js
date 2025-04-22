@@ -1,9 +1,10 @@
 import axios from 'axios';
 
-const API_URL = 'http://20.244.46.72/api/auth'; // Updated base URL
+export const API_URL = 'http://20.244.46.72/api/auth'; // Define and export API_URL
+export const AUTH_API_URL = 'http://20.244.46.72/api/auth'; // Renamed from API_URL
 
 const axiosInstance = axios.create({
-  baseURL: API_URL,
+  baseURL: AUTH_API_URL,
   timeout: 10000,
 });
 
@@ -29,4 +30,5 @@ export const login = async (email, password) => {
   }
 };
 
-export { API_URL, axiosInstance }; // Export API_URL for use in other files
+// Export other utilities
+export { axiosInstance }; // Export axiosInstance separately
